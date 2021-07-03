@@ -1,0 +1,243 @@
+# vim: set ft=dosini :
+
+[global/wm]
+margin-top = 0
+margin-bottom = 0
+
+;############################
+;######    SETTINGS    ######
+;############################
+[settings]
+screenchange-reload = true
+
+;############################
+;######     COLORS     ######
+;############################
+[color]
+background = ${xrdb:background}
+foreground = ${xrdb:foreground}
+dbrown     = ${xrdb:color0}
+lbrown     = ${xrdb:color8}
+dred       = ${xrdb:color1}
+lred       = ${xrdb:color9}
+dgreen     = ${xrdb:color2}
+lgreen     = ${xrdb:color10}
+dorange    = ${xrdb:color3}
+lorange    = ${xrdb:color11}
+dblue      = ${xrdb:color4}
+lblue      = ${xrdb:color12}
+dpink      = ${xrdb:color5}
+lpink      = ${xrdb:color13}
+dturq      = ${xrdb:color6}
+lturq      = ${xrdb:color14}
+dyellow    = ${xrdb:color7}
+lyellow    = ${xrdb:color15}
+
+gray       = #878787
+white      = #ebebeb
+
+ok         = ${color.dgreen}
+nok        = ${color.dred}
+
+;############################
+;######      FONTS     ######
+;############################
+
+[fonts]
+font-0 = "Fantasque Sans Mono:size=8:antialias=true:autohint=true;2"
+font-1 = "Fantasque Sans Mono:size=8:weight=Bold:antialias=true:autohint=true;2"
+font-2 = "FontAwesome:style=Regular:size=10:antialias=true;2"
+
+;############################
+;######    HLWM BAR    ######
+;############################
+[bar/hlwm]
+;monitor = eDP1
+radius = 0.0
+fixed-center = true
+bottom = false
+height = 16
+
+width = 100%
+
+border-top-size = 0
+border-bottom-size = 0
+border-color = ${color.background}
+
+enable-ipc = true
+
+padding-left = 2
+padding-right = 2
+
+module-margin = 1
+
+underline-size = 3
+
+
+modules-left = workspaces sep spotify
+modules-center = date
+modules-right = network eth sep backlight sep mic sep volume sep battery sep xkeyboard
+
+font-0 = ${fonts.font-0}
+font-1 = ${fonts.font-1}
+font-2 = ${fonts.font-2}
+
+cursor-click = pointer
+
+;#######################################
+;######          MODULES          ######
+;#######################################
+[module/info]
+type = custom/script
+exec = herbstluftwm --version | fold -w 18
+interval = 3600
+label = %output%
+format = <label>
+format-foreground = ${color.red}
+#--------------------------------------------
+
+[module/sep]
+type = custom/script
+exec = echo "|"
+interval = 500
+label-padding = 0
+format-foreground = ${color.foreground}
+#--------------------------------------------
+
+[module/spotify]
+type = custom/script
+interval = 1
+format = <label>
+exec = python ~/.config/polybar/scripts/spotify_status.py -f '{artist}: {song}'
+#--------------------------------------------
+
+[module/backlight]
+type = internal/backlight
+format = <label>
+label = "%{F#878787}%{T3}%{T-}%{F-} %percentage%%"
+card = intel_backlight
+#--------------------------------------------
+
+[module/network]
+type = internal/network
+interface = wlp3s0
+
+format-connected = <label-connected>
+label-connected = "%{F#878787}%{T3}%{T-}%{F-} %essid%"
+label-disconnected = - 
+label-disconnected-foreground = ${color.dorange}
+#--------------------------------------------
+
+[module/eth]
+type = internal/network
+interface = enp0s25
+label-connected = "%{F#878787}%{T2}eth"
+label-disconnected-foreground = ${color.dorange}
+#--------------------------------------------
+
+[module/workspaces]
+type = internal/xworkspaces
+enable-click = true
+enable-scroll = true
+
+format = <label-state>
+
+label-active = "%{T3}"
+label-active-foreground = ${color.lturq}
+label-active-padding = 1
+label-active-font = 2 
+
+label-occupied = %name%
+label-occupied-foreground = ${color.lturq}
+label-occupied-padding = 1
+label-occupied-font = 2
+
+label-urgent = %name%
+label-urgent-foreground = ${color.white}
+label-urgent-padding = 1
+label-urgent-font = 2
+
+label-empty = %name%
+label-empty-padding = 1
+label-empty-foreground = ${color.dbrown}
+label-empty-font = 2
+#--------------------------------------------
+
+[module/xwindow]
+type = internal/xwindow
+label = " | %title:0:37:...%"
+label-empty = "  "
+label-empty-foreground = ${color.yellow}
+;label-background = ${color.gray}
+;label-padding = 1
+format-prefix = %{F#b5bd68}%{F-}
+#--------------------------------------------
+
+[module/battery]
+type = internal/battery
+battery = BAT0
+adapter = AC
+full-at = 100
+interval = 1
+
+format-charging = <label-charging>
+label-charging = "%{F#878787}%{T3}%{T-}%{F-}%percentage:3%%"
+
+format-discharging = <ramp-capacity> <label-discharging>
+label-discharging = "%percentage:3%%"
+
+format-full = <ramp-capacity> <label-full>
+label-full = "%percentage:3%%"
+
+ramp-capacity-0 = 
+ramp-capacity-1 = 
+ramp-capacity-2 = 
+ramp-capacity-3 = 
+ramp-capacity-4 = 
+ramp-capacity-0-foreground = ${color.lred}
+#--------------------------------------------
+
+[module/date]
+type = internal/date
+label = %date%
+date = "%a,%e %b | %H:%M"
+interval = 1
+format-foreground = ${color.foreground}
+date-alt = "week %V"
+#--------------------------------------------
+
+[module/volume]
+type = internal/pulseaudio
+format-volume =  <label-volume>
+label-volume = "%{F#878787}%{T3}%{T-}%{F-} %percentage%%"
+
+format-muted-foreground = ${color.dorange}
+label-muted = "%{T3}%{T-} %percentage%%"
+#--------------------------------------------
+
+[module/mic]
+type = custom/script
+interval = 1
+format = %{F#878787}%{T3}<label>
+exec = ~/.config/polybar/scripts/mic.sh display
+click-left = ~/.config/polybar/scripts/mic.sh toggle
+#--------------------------------------------
+
+[module/xkeyboard]
+type = internal/xkeyboard
+format = <label-layout> <label-indicator>
+format-spacing = 0
+
+label-layout = %icon%
+label-layout-foreground = ${color.white}
+layout-icon-default = ?
+layout-icon-0 = se;se
+layout-icon-1 = pl;pl
+#--------------------------------------------
+
+[module/bluetooth]
+type = custom/script
+interval = 1
+exec = ~/.config/polybar/scripts/bluetooth_jbl.sh check
+click-left = ~/.config/polybar/scripts/bluetooth_jbl.sh toggle
+
